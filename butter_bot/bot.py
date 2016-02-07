@@ -1,22 +1,37 @@
 import speech_recognition as sr
 import cv2
+import subprocess
+import sys
+import state_singleton as state
 
-curstate = "waiting"
+ 
 
 
+def say(phrase):
+	if phrase == "purpose":
+		subprocess.Popen(['mpg123', 'resources/whatismypurpose.mp3'])
+	elif phrase == "ohmygod":
+		subprocess.Popen(['mpg123', 'resources/ohmygod.mp3'])
 
+def getState():
+	return curstate
 
 def speechCallback(recognizer, audio):
 	try:
+		curstate = getState()
+		print curstate
 		words = recognizer.recognize_google(audio)
 		print("butterbot heard " + words)
-		if words.contains("pass the butter") and curstate == "inquisition":
+		if "pass the butter" in words and curstate == "inquisition":
 			curstate = "search_for_butter"
-		elif words.contains("you pass butter") and curstate == "inquisition":
+		elif "you pass butter" in words and curstate == "inquisition":
+			say("ohmygod")
 			curstate = "existential_crisis"
+		else:
+			print("not in dictionary")
 			
-	except LookupError:
-		print("didn't catch that...")
+	except sr.UnknownValueError:
+		print("didn't catch that..." + repr(sys.exc_info()[0]))
 
 
 def setupSpeech():
@@ -28,11 +43,21 @@ def setupSpeech():
 
 
 def main():
+	global curstate
+	curstate = "waiting"
+
+
 	print("Initializing butterbot")
 	print("Initializing speech module")
 	setupSpeech()
 	print("setup success")
 	print("initializing camera module")
+
+	say("purpose")
+	curstate = "inquisition"
+	print curstate
+
+
 	while True:
 		if curstate == "waiting":
 			pass
