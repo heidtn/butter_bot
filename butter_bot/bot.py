@@ -3,7 +3,8 @@ import cv2
 import subprocess
 import sys
 
- 
+from threading import Thread
+import find_butter
 
 
 def say(phrase):
@@ -51,6 +52,10 @@ def main():
 	setupSpeech()
 	print("setup success")
 	print("initializing camera module")
+	tag = find_butter.tagpos()
+	findbutter = Thread(target=find_butter.findButter, args=(tag,))
+	findbutter.setDaemon(True)
+	findbutter.start()
 
 	say("purpose")
 	curstate = "inquisition"
