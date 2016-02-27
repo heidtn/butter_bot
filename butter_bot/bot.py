@@ -2,7 +2,6 @@ import speech_recognition as sr
 import cv2
 import subprocess
 import sys
-import state_singleton as state
 
  
 

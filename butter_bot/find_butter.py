@@ -1,19 +1,76 @@
-import cv2
-import zbar
-from PIL import Image
+import subprocess
+import sys, os, signal
 
-#takes an opencv image and returns the coordinates on screen (for now)
-def findButter(image):
-	scanner = zbar.ImageScanner()
-	scanner.parse_config('enable')
+from threading import Thread, Lock
 
-	im = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY,dstCn=0)
-	pil = Image.fromarray(im)
-	width, height = pil.size
-	raw = pil.tobytes()
-	image = zbar.Image(width, height, 'Y800', raw)
-	scanner.scan(image)
-	for symbol in image:
-		print 'decoded', symbol.type, 'symbol', '"%s"' % repr(symbol.location)
+#black part of tag size in meters
+tagsize = .05
+mutex = Lock()
 
-	del image
+
+
+#positions is of type tagpos
+def findButter(positions):
+	command = ['tags/apriltags/build/bin/apriltags_demo -d -S ' + str(tagsize)]
+	
+	process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
+	
+	global child_pid
+	child_pid = process.pid
+
+	# Poll process for new output until finished
+	while True:
+		nextline = process.stdout.readline()
+		if nextline == '' and process.poll() != None:
+			break
+
+		if "Id" in nextline:
+			ididx = nextline.index(')')
+			line = nextline[(ididx + 1):]
+			line = line.strip()
+			elements = line.split(',')
+			elements = map(lambda x: float(x.split('=')[1].replace('m', '')), elements)
+
+			print elements
+
+			mutex.acquire()
+			try:
+				positions.settag(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], elements[6])
+			finally:
+				mutex.release()
+
+#this sounds pretty bad...
+def kill_child():
+	if child_pid is None:
+		pass
+	else:
+		print "killing camera process"
+		os.kill(child_pid, signal.SIGTERM)
+
+import atexit
+atexit.register(kill_child)
+
+			
+
+class tagpos:
+	def __init__(self):
+		self.dist = 0.0
+		self.x = 0.0
+		self.y = 0.0
+		self.z = 0.0
+		self.yaw = 0.0
+		self.pitch = 0.0
+		self.roll = 0.0
+
+	def settag(self, dist, x, y, z, yaw, pitch, roll):
+		self.dist = dist
+		self.x = x
+		self.y = y
+		self.z = z
+		self.yaw = yaw
+		self.pitch = pitch
+		self.roll = roll
+
+if __name__ == "__main__":
+	dummy = tagpos()
+	findButter(dummy)
