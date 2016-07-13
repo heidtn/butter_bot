@@ -41,11 +41,14 @@ def findButter(positions):
 
 #this sounds pretty bad...
 def kill_child():
-	if child_pid is None:
-		pass
-	else:
-		print "killing camera process"
-		os.kill(child_pid, signal.SIGTERM)
+	try:
+		if child_pid is None:
+			pass
+		else:
+			print "killing camera process"
+			os.kill(child_pid, signal.SIGTERM)
+	except Exception:
+		print "process never started..."
 
 import atexit
 atexit.register(kill_child)
