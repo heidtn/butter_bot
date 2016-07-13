@@ -1,41 +1,33 @@
 """this is pulled from Pololu's library for driving motors here: https://github.com/pololu/drv8835-motor-driver-rpi/blob/master/pololu_drv8835_rpi.py"""
 
-import wiringpi2
+from RPIO import PWM
+import RPIO
+
 import lcm
 from butterbotlcm import motor_t
 
 
 lc = lcm.LCM()
-# Motor speeds for this library are specified as numbers
-# between -MAX_SPEED and MAX_SPEED, inclusive.
-_max_speed = 480  # 19.2 MHz / 2 / 480 = 20 kHz
-MAX_SPEED = _max_speed
 
-io_initialized = False
 
-A1IN = 0
-A2IN = 2
+A1IN = 17
+A2IN = 22
+B1IN = 27
+B2IN = 23
 
-B1IN = 3
-B2IN = 4
+CHANNEL = 0
+TIMING = 3000
+MAX_SPEED = TIMING - 1
 
 def io_init():
-  global io_initialized
-  if io_initialized:
-    return
+  PWM.setup()
+  PWM.init_channel(CHANNEL, TIMING)
+  RPIO.setmode(RPIO.BOARD)
+  RPIO.setup(A1IN, RPIO.OUT)
+  RPIO.setup(A2IN, RPIO.OUT)
+  RPIO.setup(B1IN, RPIO.OUT)
+  RPIO.setup(B2IN, RPIO.OUT)
 
-  wiringpi2.wiringPiSetupGpio()
-  wiringpi2.pinMode(A1IN, wiringpi2.GPIO.PWM_OUTPUT)
-  wiringpi2.pinMode(B1IN, wiringpi2.GPIO.PWM_OUTPUT)
-
-  wiringpi2.pwmSetMode(wiringpi2.GPIO.PWM_MODE_MS)
-  wiringpi2.pwmSetRange(MAX_SPEED)
-  wiringpi2.pwmSetClock(2)
-
-  wiringpi2.pinMode(A2IN, wiringpi2.GPIO.OUTPUT)
-  wiringpi2.pinMode(B2IN, wiringpi2.GPIO.OUTPUT)
-
-  io_initialized = True
 
 class Motor(object):
     MAX_SPEED = _max_speed
@@ -54,8 +46,9 @@ class Motor(object):
         if speed > MAX_SPEED:
             speed = MAX_SPEED
 
-        wiringpi2.digitalWrite(self.dir_pin, dir_value)
-        wiringpi2.pwmWrite(self.pwm_pin, speed)
+        RPIO.output(self.dir_pin, dir_value)
+        PWM.add_channel_pulse(CHANNEL, self.pwm_pin, 0, speed)
+
 
 class Motors(object):
     MAX_SPEED = _max_speed
