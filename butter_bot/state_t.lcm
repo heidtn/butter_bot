@@ -1,0 +1,7 @@
+package butterbotlcm;
+
+struct state_t
+{
+    int64_t  timestamp;
+    string state;
+}

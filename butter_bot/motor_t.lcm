@@ -1,0 +1,8 @@
+package butterbotlcm;
+
+struct motor_t
+{
+    int64_t  timestamp;
+    double leftmotor;
+    double rightmotor;
+}
