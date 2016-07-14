@@ -1,5 +1,9 @@
 import subprocess
 import sys, os, signal
+import lcm
+
+from butterbotlcm import tagpos_t
+import time
 
 from threading import Thread, Lock
 
@@ -11,6 +15,8 @@ mutex = Lock()
 
 #positions is of type tagpos
 def findButter(positions):
+	lc = lcm.LCM()
+
 	command = ['tags/apriltags/build/bin/apriltags_demo -d -S ' + str(tagsize)]
 	
 	process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
@@ -36,6 +42,16 @@ def findButter(positions):
 			mutex.acquire()
 			try:
 				positions.settag(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], elements[6])
+				msg = state_t()
+				msg.timestamp = int(time.time())
+				msg.dist = positions.dist
+				msg.x = positions.x
+				msg.y = positions.y
+				msg.z = positions.z
+				msg.roll = positions.roll
+				msg.pitch = positions.pitch
+				msg.yaw = positions.yaw
+				lc.publish("BUTTERBOT", msg.encode())
 			finally:
 				mutex.release()
 
@@ -73,6 +89,7 @@ class tagpos:
 		self.yaw = yaw
 		self.pitch = pitch
 		self.roll = roll
+
 
 if __name__ == "__main__":
 	dummy = tagpos()

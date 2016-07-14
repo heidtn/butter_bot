@@ -48,7 +48,7 @@ while True:
     msg.timestamp = int(time.time())
     msg.leftmotor = leftMotor
     msg.rightmotor = rightMotor
-    lc.publish("BUTTERBOT", msg.encode())
+    lc.publish("BUTTERBOT_MOTOR", msg.encode())
     time.sleep(.5)
             
 

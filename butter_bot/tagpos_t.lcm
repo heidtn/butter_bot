@@ -1,0 +1,13 @@
+package butterbotlcm;
+
+struct tagpos_t
+{
+    int64_t  timestamp;
+    double dist;
+	double x;
+	double y;
+	double z;
+	double yaw;
+	double pitch;
+	double roll;
+}

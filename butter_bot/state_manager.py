@@ -51,7 +51,7 @@ def updateState(newState):
 	msg = state_t()
 	msg.timestamp = int(time.time())
 	msg.state = newState
-	lc.publish("BUTTERBOT", msg.encode())
+	lc.publish("BUTTERBOT_STATE", msg.encode())
 
 
 if __name__ == "__main__":
@@ -63,7 +63,6 @@ if __name__ == "__main__":
 	print curstate
 
 	while True:
-
 		if curstate == "waiting":
 			pass
 		elif curstate == "inquisition":
