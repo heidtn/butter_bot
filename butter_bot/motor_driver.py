@@ -11,32 +11,33 @@ lc = lcm.LCM()
 
 
 A1IN = 17
-A2IN = 22
-B1IN = 27
-B2IN = 23
+A2IN = 27
 
-CHANNEL = 0
-TIMING = 3000
+B2IN = 23
+B1IN = 22
+
+TIMING = 2000
 MAX_SPEED = TIMING - 1
 
 def io_init():
-  PWM.setup()
-  PWM.init_channel(CHANNEL, TIMING)
-  RPIO.setmode(RPIO.BOARD)
-  RPIO.setup(A1IN, RPIO.OUT)
-  RPIO.setup(A2IN, RPIO.OUT)
-  RPIO.setup(B1IN, RPIO.OUT)
-  RPIO.setup(B2IN, RPIO.OUT)
+  #RPIO.setup(A2IN, RPIO.OUT)
+  #RPIO.setup(B2IN, RPIO.OUT)
+  #RPIO.setup(A1IN, RPIO.OUT)
+  #RPIO.setup(B1IN, RPIO.OUT)
 
+  PWM.setup()
 
 class Motor(object):
-    MAX_SPEED = _max_speed
-
-    def __init__(self, pwm_pin, dir_pin):
-        self.pwm_pin = pwm_pin
-        self.dir_pin = dir_pin
+    def __init__(self, xin1, xin2, channels):
+        self.xin1 = xin1
+        self.xin2 = xin2
+	self.channel1 = channels[0]
+	self.channel2 = channels[1]
+	PWM.init_channel(self.channel1)
+	PWM.init_channel(self.channel2)
 
     def setSpeed(self, speed):
+	speed = int(speed/100.0 * MAX_SPEED + 0.5)
         if speed < 0:
             speed = -speed
             dir_value = 1
@@ -45,18 +46,23 @@ class Motor(object):
 
         if speed > MAX_SPEED:
             speed = MAX_SPEED
-
-        RPIO.output(self.dir_pin, dir_value)
-        PWM.add_channel_pulse(CHANNEL, self.pwm_pin, 0, speed)
+        
+        PWM.add_channel_pulse(self.channel1, self.xin1, 0, dir_value*speed)
+        PWM.add_channel_pulse(self.channel2, self.xin2, 0, (1 - dir_value)*speed)
 
 
 class Motors(object):
-    MAX_SPEED = _max_speed
-
     def __init__(self):
-        self.motor1 = Motor(A1IN, A2IN)
-        self.motor2 = Motor(B1IN, B2IN)
-        io_init()
+        try:
+            io_init()
+        except RuntimeError:
+            print("Already configured IO")
+    
+        self.motor1 = Motor(A1IN, A2IN, (0, 1))
+        self.motor2 = Motor(B1IN, B2IN, (2, 3))
+    
+    def __del__(self):
+        RPIO.cleanup()
 
     def setSpeeds(self, m1_speed, m2_speed):
         self.motor1.setSpeed(m1_speed)
