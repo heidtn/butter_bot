@@ -75,7 +75,7 @@ def my_handler(channel, data):
   motors.setSpeeds(msg.leftmotor, msg.rightmotor)
 
 if __name__ == "__main__":
-  subscription = lc.subscribe("EXAMPLE", my_handler)
+  subscription = lc.subscribe("BUTTERBOT", my_handler)
   try:
     while True:
       lc.handle()
