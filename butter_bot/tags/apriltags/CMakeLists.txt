@@ -16,6 +16,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 target_link_libraries(apriltags ${OpenCV_LIBS}) #-pg) #-fopenmp)
 pods_use_pkg_config_packages(apriltags eigen3)
 
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/local/lib/cmake/)
+find_package(raspicam REQUIRED)
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   target_link_libraries(apriltags -L/opt/local/lib/) # MacPorts special treatment...
 else (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

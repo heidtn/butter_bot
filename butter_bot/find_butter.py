@@ -42,7 +42,7 @@ def findButter(positions):
 			mutex.acquire()
 			try:
 				positions.settag(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], elements[6])
-				msg = state_t()
+				msg = tagpos_t()
 				msg.timestamp = int(time.time())
 				msg.dist = positions.dist
 				msg.x = positions.x
@@ -71,7 +71,7 @@ atexit.register(kill_child)
 
 			
 
-class tagpos:
+class Tagpos:
 	def __init__(self):
 		self.dist = 0.0
 		self.x = 0.0
@@ -92,5 +92,5 @@ class tagpos:
 
 
 if __name__ == "__main__":
-	dummy = tagpos()
+	dummy = Tagpos()
 	findButter(dummy)

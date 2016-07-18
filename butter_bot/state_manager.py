@@ -5,7 +5,7 @@ import sys
 
 from butterbotlcm import state_t
 
-curstate = "waiting"
+curstate = "idle"
 lc = lcm.LCM()
 
 import time
@@ -26,7 +26,7 @@ def speechCallback(recognizer, audio):
 		words = recognizer.recognize_google(audio)
 		print("butterbot heard " + words)
 		if "pass the butter" in words and curstate == "inquisition":
-			updateState("search_for_butter")
+			updateState("get_butter")
 		elif "you pass butter" in words and curstate == "inquisition":
 			say("ohmygod")
 			updateState("existential_crisis")
@@ -63,17 +63,11 @@ if __name__ == "__main__":
 	print curstate
 
 	while True:
-		if curstate == "waiting":
+		if curstate == "idle":
 			pass
 		elif curstate == "inquisition":
 			pass
-		elif curstate == "search_for_butter":
-			pass
-		elif curstate == "go_to_butter":
-			pass
-		elif curstate == "grab_butter":
-			pass
-		elif curstate == "return_butter":
+		elif curstate == "get_butter":
 			pass
 		elif curstate == "existential_crisis":
 			pass		

@@ -1,0 +1,7 @@
+package butterbotlcm;
+
+struct navstate_t
+{
+    int64_t  timestamp;
+    string state;
+}
