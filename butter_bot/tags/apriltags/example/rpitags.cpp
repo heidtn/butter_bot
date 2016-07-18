@@ -275,7 +275,9 @@ public:
 
   void setup() {
     m_tagDetector = new AprilTags::TagDetector(m_tagCodes);
-    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1 );
+    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1);
+    Camera.set( CV_CAP_PROP_FRAME_WIDTH, 640);
+    Camera.set( CV_CAP_PROP_FRAME_HEIGHT, 480);
 
     // prepare window for drawing the camera images
     if (m_draw) {
@@ -379,12 +381,12 @@ public:
     //      m_cap.retrieve(image);
 
     // detect April tags (requires a gray scale image)
-    cv::cvtColor(image, image_gray, CV_BGR2GRAY);
+    //cv::cvtColor(image, image_gray, CV_BGR2GRAY);
     double t0;
     if (m_timing) {
       t0 = tic();
     }
-    vector<AprilTags::TagDetection> detections = m_tagDetector->extractTags(image_gray);
+    vector<AprilTags::TagDetection> detections = m_tagDetector->extractTags(image);
     if (m_timing) {
       double dt = tic()-t0;
       cout << "Extracting tags took " << dt << " seconds." << endl;
