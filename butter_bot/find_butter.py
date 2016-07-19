@@ -51,7 +51,7 @@ def findButter(positions):
 				msg.roll = positions.roll
 				msg.pitch = positions.pitch
 				msg.yaw = positions.yaw
-				lc.publish("BUTTERBOT", msg.encode())
+				lc.publish("BUTTERBOT_TAG", msg.encode())
 			finally:
 				mutex.release()
 

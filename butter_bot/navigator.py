@@ -33,6 +33,7 @@ pd = PID(1.0, 0, 0.5)
 
 def tag_handler(channel, data):
     msg = tagpos_t.decode(data)
+    print("new tag")
     with mutex:
         lastTag.timestamp = msg.timestamp
         lastTag.dist      = msg.dist
