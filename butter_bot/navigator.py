@@ -102,7 +102,7 @@ def handle_states():
                 print("state now", state)
         elif state == "move":
             navigate_to_tag()
-            if lastTag.dist < .10:
+            if lastTag.dist < .25:
                 state = "grab"
                 print("state now", state)
             if (time.time() - lastTag.timestamp) > 5:
