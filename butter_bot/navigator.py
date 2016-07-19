@@ -29,11 +29,10 @@ existential
 
 state = "idle"
 lastTag = Tagpos()
-pd = PID(1.0, 0, 0.5)
+pd = PID(20.0, 0, 0.0)
 
 def tag_handler(channel, data):
     msg = tagpos_t.decode(data)
-    print("new tag")
     with mutex:
         lastTag.timestamp = msg.timestamp
         lastTag.dist      = msg.dist
@@ -47,7 +46,7 @@ def state_handler(channel, data):
     global state
     with mutex:
         state_in = msg.state
-        if state_in == "get_butter":
+        if state_in == "get_butter" and state == "idle":
             state = "startsearch"
         elif state == "idle":
             state = "idle"
@@ -77,7 +76,7 @@ def panic():
     set_motors(50.0, 50.0)
 
 def navigate_to_tag():
-    newval = pd.update(lastTag.x, 0)
+    newval = pd.update(-lastTag.y, 0)
     spd = 20.0
     left = spd + newval
     right = spd - newval

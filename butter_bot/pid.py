@@ -6,6 +6,10 @@ class PID:
 		self.kI = I
 		self.kD = D
 
+		self.P = 0
+		self.I = 0
+		self.D = 0
+
 		self.isClipped = True
 		self.clip = 40.0
 
@@ -18,7 +22,7 @@ class PID:
 		self.isClipped = isClipped
 		self.clip = abs(clip)
 
-	def update(newVal, goal):
+	def update(self, newVal, goal):
 		error = newVal - goal
 
 		if self.isFirst:
@@ -26,20 +30,20 @@ class PID:
 			self.isFirst = False
 
 		curtime = time.time()
-		timedif = (curtime - self.previousTime())
+		timedif = curtime - self.previousTime
 
-		P = self.kP*(error)
-		D = self.kD*(error - self.previous)*(timedif)
-		I += self.kI*(error)*(timedif)
+		self.P = self.kP*(error)
+		self.D = self.kD*(error - self.previous)*(timedif)
+		self.I += self.kI*(error)*(timedif)
 
-		I = clip(I)
+		self.I = self.clipVal(self.I)
 
 		self.previousTime = time.time()
 		self.previous = error
 
-		return P + I + D
+		return self.P + self.I + self.D
 
-	def clip(self, I):
+	def clipVal(self, I):
 		if I > self.clip:
 			I = self.clip
 		elif I < -self.clip:

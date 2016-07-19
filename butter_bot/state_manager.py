@@ -63,6 +63,8 @@ if __name__ == "__main__":
 	print curstate
 
 	while True:
+		time.sleep(1)
+		updateState(curstate)
 		if curstate == "idle":
 			pass
 		elif curstate == "inquisition":

@@ -20,12 +20,8 @@ TIMING = 2000
 MAX_SPEED = TIMING - 1
 
 def io_init():
-  #RPIO.setup(A2IN, RPIO.OUT)
-  #RPIO.setup(B2IN, RPIO.OUT)
-  #RPIO.setup(A1IN, RPIO.OUT)
-  #RPIO.setup(B1IN, RPIO.OUT)
-
   PWM.setup()
+  PWM.set_loglevel(PWM.LOG_LEVEL_ERRORS)
 
 class Motor(object):
     def __init__(self, xin1, xin2, channels):

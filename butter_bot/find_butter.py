@@ -73,7 +73,7 @@ atexit.register(kill_child)
 
 class Tagpos:
 	def __init__(self):
-		self.timestamp = time.time()
+		self.timestamp = 0
 		self.dist = 0.0
 		self.x = 0.0
 		self.y = 0.0
