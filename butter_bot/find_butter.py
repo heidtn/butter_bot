@@ -15,7 +15,7 @@ mutex = Lock()
 
 #positions is of type tagpos
 def findButter(positions):
-	lc = lcm.LCM()
+	lc = lcm.LCM("udpm://239.255.76.67:7667?ttl=1")
 
 	command = ['tags/apriltags/build/bin/rpitags -d -S ' + str(tagsize)]
 	
@@ -73,6 +73,7 @@ atexit.register(kill_child)
 
 class Tagpos:
 	def __init__(self):
+		self.timestamp = time.time()
 		self.dist = 0.0
 		self.x = 0.0
 		self.y = 0.0
@@ -89,6 +90,7 @@ class Tagpos:
 		self.yaw = yaw
 		self.pitch = pitch
 		self.roll = roll
+		self.timestamp = time.time()
 
 
 if __name__ == "__main__":

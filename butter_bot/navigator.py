@@ -13,7 +13,7 @@ from find_butter import Tagpos
 from pid import PID
 
 mutex = Lock()
-lc = lcm.LCM()
+lc = lcm.LCM("udpm://239.255.76.67:7667?ttl=1")
 
 
 """
@@ -93,25 +93,30 @@ def handle_states():
         elif state == "startsearch":
             start_search_mode()
             state = "search"
+            print("state now", state)
         elif state == "search":
             curtime = int(time.time())
             if curtime - lastTag.timestamp < 3:
                 stop_motors()
                 state = "move"
+                print("state now", state)
         elif state == "move":
             navigate_to_tag()
             if lastTag.dist < .10:
                 state = "grab"
+                print("state now", state)
             if (time.time() - lastTag.timestamp) > 5:
                 start_search_mode()
         elif state == "grab":
             state = "return"
+            print("state now", state)
             global returnStart 
             returnStart = time.time()
         elif state == "return":
             set_motors(-20, -20)
             if (time.time() - returnStart) > 8:
                 state = "idle"
+                print("state now", state)
             
         elif state == "existential":
             panic()
@@ -120,6 +125,7 @@ def handle_states():
 def main():
     subscription = lc.subscribe("BUTTERBOT_TAG", tag_handler)
     subscription = lc.subscribe("BUTTERBOT_STATE", state_handler)
+    print("navigator starting")
     try:
         while True:
             lc.handle_timeout(100)
