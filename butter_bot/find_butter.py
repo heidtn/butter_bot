@@ -17,7 +17,7 @@ mutex = Lock()
 def findButter(positions):
 	lc = lcm.LCM()
 
-	command = ['tags/apriltags/build/bin/apriltags_demo -d -S ' + str(tagsize)]
+	command = ['tags/apriltags/build/bin/rpitags -d -S ' + str(tagsize)]
 	
 	process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
 	
