@@ -161,8 +161,8 @@ public:
     m_draw(true),
     m_timing(false),
 
-    m_width(640),
-    m_height(480),
+    m_width(320),
+    m_height(240),
     m_tagSize(0.166),
     m_fx(600),
     m_fy(600),
@@ -276,8 +276,8 @@ public:
   void setup() {
     m_tagDetector = new AprilTags::TagDetector(m_tagCodes);
     Camera.set( CV_CAP_PROP_FORMAT, CV_8UC1);
-    Camera.set( CV_CAP_PROP_FRAME_WIDTH, 640);
-    Camera.set( CV_CAP_PROP_FRAME_HEIGHT, 480);
+    Camera.set( CV_CAP_PROP_FRAME_WIDTH, m_width);
+    Camera.set( CV_CAP_PROP_FRAME_HEIGHT, m_height);
 
     // prepare window for drawing the camera images
     if (m_draw) {
